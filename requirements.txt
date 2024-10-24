@@ -1,0 +1,6 @@
+setuptools
+pytest-cov
+pytest-watch
+ipykernel
+pandas
+pyyaml

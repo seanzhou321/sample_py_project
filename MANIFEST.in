@@ -1,0 +1,32 @@
+# Include all resource files
+recursive-include sample_project/resources *.yaml
+recursive-include sample_project/resources *.yml
+recursive-include sample_project/resources *.csv
+recursive-include sample_project/resources *.sql
+recursive-include sample_project/resources/templates *.html
+recursive-include sample_project/resources/templates *.txt
+recursive-include sample_project/resources/templates *.j2
+
+# Include documentation
+include README.md
+include LICENSE
+include requirements.txt
+
+# Include tests
+recursive-include tests *.py
+
+# Exclude any compiled Python files
+global-exclude *.py[cod]
+global-exclude __pycache__
+global-exclude *.so
+
+# Exclude development and IDE files
+global-exclude .git*
+global-exclude .env*
+global-exclude .vscode*
+global-exclude .idea*
+
+# Exclude test cache and coverage files
+global-exclude .coverage
+global-exclude .pytest_cache
+global-exclude htmlcov

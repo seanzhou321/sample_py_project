@@ -1,0 +1,11 @@
+id,date,product,category,quantity,price,customer_id
+1,2024-01-01,Laptop,Electronics,1,1299.99,C001
+2,2024-01-01,Mouse,Accessories,2,24.99,C002
+3,2024-01-02,Monitor,Electronics,1,349.99,C003
+4,2024-01-02,Keyboard,Accessories,1,79.99,C001
+5,2024-01-03,Headphones,Accessories,3,59.99,C004
+6,2024-01-03,Laptop,Electronics,1,1499.99,C005
+7,2024-01-04,Tablet,Electronics,2,599.99,C002
+8,2024-01-04,Charger,Accessories,4,29.99,C003
+9,2024-01-05,Monitor,Electronics,2,399.99,C005
+10,2024-01-05,Mouse,Accessories,5,24.99,C004
