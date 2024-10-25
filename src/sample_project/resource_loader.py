@@ -82,7 +82,7 @@ class ResourceLoader:
     def load_csv_data(
         csv_name: str,
         package: str = RESOURCE_ROOT, 
-) -> pd.DataFrame:
+    ) -> pd.DataFrame:
         """
         Load a CSV file from resources into a pandas DataFrame.
         
