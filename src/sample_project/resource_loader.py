@@ -5,6 +5,8 @@ import yaml
 import pandas as pd
 import typing
 
+RESOURCE_ROOT = "sample_project.resources"
+
 class ResourceLoader:
     """
     Modern resource loading using importlib.resources.
@@ -12,7 +14,10 @@ class ResourceLoader:
     """
     
     @staticmethod
-    def read_text_resource(package: str, resource_name: str) -> str:
+    def read_text_resource(
+        resource_name: str,
+        package: str = RESOURCE_ROOT, 
+    ) -> str:
         """
         Read a text resource file using importlib.resources.
         
@@ -27,12 +32,16 @@ class ResourceLoader:
             # Modern approach (Python 3.9+)
             with resources.files(package).joinpath(resource_name).open('r') as f:
                 return f.read()
-        except Exception:
+        except Exception as e:
+            print(f"Error reading resource file: {e}")
             # Fallback for older Python versions
             return resources.read_text(package, resource_name)
 
     @staticmethod
-    def get_resource_path(package: str, resource_name: str) -> Path:
+    def get_resource_path(
+        resource_name: str,
+        package: str = RESOURCE_ROOT, 
+    ) -> Path:
         """
         Get the path to a resource file.
         
@@ -52,7 +61,10 @@ class ResourceLoader:
                 return path
 
     @staticmethod
-    def load_yaml_config(package: str, config_name: str) -> dict:
+    def load_yaml_config(
+        config_name: str,
+        package: str = RESOURCE_ROOT, 
+    ) -> dict:
         """
         Load a YAML configuration file from resources.
         
@@ -63,11 +75,14 @@ class ResourceLoader:
         Returns:
             Dictionary containing the YAML data
         """
-        content = ResourceLoader.read_text_resource(package, config_name)
+        content = ResourceLoader.read_text_resource(config_name, package)
         return yaml.safe_load(content)
 
     @staticmethod
-    def load_csv_data(package: str, csv_name: str) -> pd.DataFrame:
+    def load_csv_data(
+        csv_name: str,
+        package: str = RESOURCE_ROOT, 
+) -> pd.DataFrame:
         """
         Load a CSV file from resources into a pandas DataFrame.
         
@@ -78,11 +93,15 @@ class ResourceLoader:
         Returns:
             Pandas DataFrame containing the CSV data
         """
-        path = ResourceLoader.get_resource_path(package, csv_name)
+        path = ResourceLoader.get_resource_path(csv_name, package)
         return pd.read_csv(path)
 
     @staticmethod
-    def load_sqlite_data(package: str, db_name: str, query:str) -> pd.DataFrame:
+    def load_sqlite_data(
+        db_name: str, 
+        query:str,
+        package: str = RESOURCE_ROOT, 
+    ) -> pd.DataFrame:
         """
         Load data from a SQLite database.
         
@@ -94,7 +113,7 @@ class ResourceLoader:
             pandas.DataFrame: Query results
         """
 
-        db_path = ResourceLoader.get_resource_path(package, db_name)
+        db_path = ResourceLoader.get_resource_path(db_name, package)
 
         try:
             conn = sqlite3.connect(db_path)
@@ -107,7 +126,7 @@ class ResourceLoader:
             return None
         
     @staticmethod
-    def list_resources(package: str) -> typing.List[str]:
+    def list_resources(package: str = RESOURCE_ROOT) -> typing.List[str]:
         """
         List all resources in a package.
         
@@ -130,7 +149,10 @@ class ResourceLoader:
                 resources.files(package))
 
     @staticmethod
-    def resource_exists(package: str, resource_name: str) -> bool:
+    def resource_exists(
+        resource_name: str,
+        package: str = RESOURCE_ROOT, 
+    ) -> bool:
         """
         Check if a resource exists in the package.
         
@@ -142,8 +164,7 @@ class ResourceLoader:
             True if resource exists, False otherwise
         """
         try:
-            with resources.path(package, resource_name):
-                return True
+            return resources.files(package).joinpath(resource_name).is_file()
         except FileNotFoundError:
             return False
 
@@ -164,28 +185,28 @@ def main():
 
     # Load YAML configuration
     try:
-        config = loader.load_yaml_config(PACKAGE, "config.yaml")
+        config = loader.load_yaml_config("config.yaml")
         print("\nConfiguration loaded:", config)
     except Exception as e:
         print(f"Error loading config: {e}")
 
     # Load CSV data
     try:
-        df = loader.load_csv_data(PACKAGE, "data.csv")
+        df = loader.load_csv_data("data.csv", PACKAGE)
         print("\nData preview:\n", df.head())
     except Exception as e:
         print(f"Error loading CSV: {e}")
 
     # Read SQL queries
     try:
-        queries = loader.read_text_resource(PACKAGE, "queries.sql")
+        queries = loader.read_text_resource("queries.sql")
         print("\nSQL Queries:", queries)
     except Exception as e:
         print(f"Error loading SQL: {e}")
 
     # Load email template
     try:
-        template = loader.read_text_resource(TEMPLATE_PACKAGE, "email_template.html")
+        template = loader.read_text_resource("email_template.html", TEMPLATE_PACKAGE)
         print("\nEmail template:", template[:100])
     except Exception as e:
         print(f"Error loading template: {e}")
@@ -193,13 +214,13 @@ def main():
     # Check if resources exist
     resources_to_check = ["config.yaml", "nonexistent.txt"]
     for resource in resources_to_check:
-        exists = loader.resource_exists(PACKAGE, resource)
+        exists = loader.resource_exists(resource, PACKAGE)
         print(f"\nResource '{resource}' exists: {exists}")
 
     # Read travel2 from SQLite data
     try:
         print("\n")
-        db = loader.load_sqlite_data(PACKAGE, "travel2.sqlite", "select * from aircrafts_data LIMIT 3")
+        db = loader.load_sqlite_data("travel2.sqlite", "select * from aircrafts_data LIMIT 3", PACKAGE)
         print("\nSTravel2 sqlite:", db.head())
     except Exception as e:
         print(f"Error loading SQL: {e}")
